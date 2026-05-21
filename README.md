@@ -123,7 +123,7 @@ pip install -r requirements.txt
 ├── requirements.txt                     # Dependencias de Python
 ├── README.md                            # Este archivo
 ├── best_modelo_futbol_v3_optimizado.pt  # Modelo con pesos entrenados
-├── ejemplo_salida.png                   # Imagen utilizada en este archivo para representación de salida
+├── ejemplo-salida.png                   # Imagen utilizada en este archivo para representación de salida
 ├── futbol.mp4                           # Video utilizado como ejemplo
 └── Data/
     └── data.yaml                        # Configuración del dataset en formato YOLO
