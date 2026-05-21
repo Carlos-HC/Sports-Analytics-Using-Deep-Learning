@@ -80,7 +80,8 @@ pip install -r requirements.txt
 
 4. **Colocar los siguientes archivos** en `/content/drive/MyDrive/IA 2/`:
    - `futbol.mp4` — el video aéreo del partido
-   - `best_modelo_futbol_v3_optimizado.pt` — pesos del modelo YOLOv8 entrenado
+   - `best_modelo_futbol_v2.pt` — pesos del modelo base (transfer learning)
+   - `best_modelo_futbol_v3_optimizado.pt` — pesos del modelo YOLOv8 final entrenado
    - `Data/data.yaml` — configuración del dataset
 
 5. **Ejecutar todas las celdas** de arriba hacia abajo. La última celda genera el video de salida con las anotaciones.
@@ -92,7 +93,7 @@ pip install -r requirements.txt
 1. **Clonar el repositorio**
    ```bash
    git clone https://github.com/Carlos-HC/Sports-Analytics-Using-Deep-Learning
-   cd <tu-repo>
+   cd <Sports-Analytics-Using-Deep-Learning>
    ```
 
 2. **Instalar dependencias**
@@ -105,6 +106,7 @@ pip install -r requirements.txt
    project_path = "/ruta/a/tu/proyecto"
    video_path   = "/ruta/a/futbol.mp4"
    model_path   = "/ruta/a/best_modelo_futbol_v3_optimizado.pt"
+   output_path  = "/ruta/de/salida/output.mp4"
    ```
 
 4. **Lanzar Jupyter**
@@ -128,7 +130,7 @@ pip install -r requirements.txt
 └── Data/
     └── data.yaml                        # Configuración del dataset en formato YOLO
 ```
-> Los pesos del modelo entrenado (`best_modelo_futbol_v3_optimizado.pt`) y el video original se almacenan en Google Drive por su tamaño.
+> Los pesos del modelo entrenado y el video original se almacenan en Google Drive por su tamaño.
 
 ---
 
@@ -148,8 +150,15 @@ Detección YOLOv8 (Jugador / Balón / Área de penalti / Medio campo)
     │
     ▼
 Filtrado por confianza
-  ├── Jugadores  ≥ 0.40, mínimo 8×12 px
-  └── Balón      ≥ 0.15, mínimo 4×4 px
+  ├── Jugadores  (P)  ≥ 0.30 conf, mínimo 8×12 px
+  ├── Balón      (B)  ≥ 0.07 conf, mínimo 4×4 px
+  ├── Área chica (AC) ≥ 0.35 conf
+  └── Medio campo(MC) ≥ 0.25 conf
+    │
+    ▼
+Bloqueo de regiones estáticas
+  ├── Línea de medio campo (Transformada de Hough)
+  └── Áreas chicas (del modelo, detectadas una vez)
     │
     ▼
 Tracking del balón (predicción por velocidad en frames sin detección)
@@ -168,12 +177,32 @@ Video de salida anotado (.mp4)
 
 ## Resumen de Metodología
 
-- **Modelo**: YOLOv8 ajustado con transfer learning desde un checkpoint previo de detección de fútbol
-- **Entrenamiento**: 50 épocas, early stopping (paciencia=10), mejor checkpoint en la época ~22
-- **Hiperparámetros**: `imgsz=640`, `batch=8`, `lr0=0.001`, `seed=42`
-- **Dataset**: más de 576 frames anotados manualmente en formato YOLO, divididos 70/15/15 (entrenamiento/validación/prueba)
-- **Herramienta de anotación**: CVAT / Roboflow
-- **Mejora del balón**: el slicing con SAHI incrementa la detección de objetos pequeños que la inferencia de frame completo omite
+1. **Preparación del dataset**
+Las imágenes fueron etiquetadas manualmente en Roboflow con 4 clases:
+
+P — Jugador
+B — Balón
+MC — Medio campo
+AC — Área chica
+
+División del dataset: 70% entrenamiento / 15% validación / 15% prueba.
+2. **Entrenamiento**
+
+Modelo base: best_futbol_equipo_v2.pt (transfer learning)
+Framework: YOLOv8 (Ultralytics)
+Hiperparámetros: epochs=50, imgsz=640, batch=8, lr0=0.001, patience=10, seed=42
+Early stopping: el mejor modelo se guardó alrededor de la época 22; el entrenamiento finalizó en la época 32.
+
+3. **Mejora de detección de objetos pequeños**
+Se utilizó SAHI con tiles de 320×320 px y 25% de overlap para mejorar la detección del balón.
+4. **Regiones de la cancha**
+
+Línea de medio campo: detectada automáticamente con la Transformada de Hough sobre el círculo central.
+Áreas chicas: detectadas por el modelo y bloqueadas en el primer frame válido para evitar oscilaciones.
+Contorno de la cancha: generado a partir de la segmentación por color verde del campo con esquinas redondeadas.
+
+5. **Seguimiento del balón**
+Sistema de tracking simple basado en posición previa con predicción de velocidad para frames donde no se detecta el balón (máximo 3 frames consecutivos sin detección).
 
 ---
 
