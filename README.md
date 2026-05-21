@@ -1,4 +1,4 @@
-    # Sports Analytics con Deep Learning — YOLOv8 + SAHI
+# Sports Analytics con Deep Learning — YOLOv8 + SAHI
 
 Proyecto final para **Inteligencia Artificial II** en la Universidad de Monterrey.  
 Pipeline de visión computacional que detecta jugadores de fútbol y el balón en video aéreo de dron y genera analíticas visuales en tiempo real por frame.
@@ -39,7 +39,7 @@ El proyecto procesa un video aéreo de 2 minutos capturado con un dron DJI Mavic
 
 Cada frame procesado tiene el siguiente aspecto:
 
-![Ejmplo de Salida](ejemplo_salida.png)
+![Ejemplo de Salida](ejemplo-salida.png)
 
 - Cajas rojas → jugadores detectados  
 - Caja azul → balón detectado  
