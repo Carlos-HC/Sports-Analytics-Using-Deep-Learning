@@ -106,7 +106,7 @@ pip install -r requirements.txt
    project_path = "/ruta/a/tu/proyecto"
    video_path   = "/ruta/a/futbol.mp4"
    model_path   = "/ruta/a/best_modelo_futbol_v3_optimizado.pt"
-   output_path  = "/ruta/de/salida/output.mp4"
+   output_path  = "/ruta/de/salida/visual-analytics.mp4"
    ```
 
 4. **Lanzar Jupyter**
@@ -121,7 +121,7 @@ pip install -r requirements.txt
 ## Estructura del Repositorio
 
 ```
-├── SportsAnalytics.ipynb                  # Notebook principal (entrenamiento + inferencia + analíticas)
+├── SportsAnalytics.ipynb                # Notebook principal (entrenamiento + inferencia + analíticas)
 ├── requirements.txt                     # Dependencias de Python
 ├── README.md                            # Este archivo
 ├── best_modelo_futbol_v3_optimizado.pt  # Modelo con pesos entrenados
