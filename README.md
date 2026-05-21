@@ -128,7 +128,7 @@ pip install -r requirements.txt
 └── Data/
     └── data.yaml                        # Configuración del dataset en formato YOLO
 ```
-> Los pesos del modelo entrenado (`best_modelo_futbol_v3_optimizado.pt`) y el video original se almacenan en Google Drive por su tamaño, al trabajarse por Google Colab.
+> Los pesos del modelo entrenado (`best_modelo_futbol_v3_optimizado.pt`) y el video original se almacenan en Google Drive por su tamaño.
 
 ---
 
