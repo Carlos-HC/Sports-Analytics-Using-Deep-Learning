@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 4
+names: ['AC', 'B', 'MC', 'P']
+
+roboflow:
+  workspace: ramns-workspace-ggsue
+  project: futbol-equipo
+  version: 2
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/ramns-workspace-ggsue/futbol-equipo/dataset/2
