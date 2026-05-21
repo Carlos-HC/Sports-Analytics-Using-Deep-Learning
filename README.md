@@ -177,31 +177,30 @@ Video de salida anotado (.mp4)
 
 ## Resumen de Metodología
 
-1. **Preparación del dataset**
-Las imágenes fueron etiquetadas manualmente en Roboflow con 4 clases:
+### 1. Preparación del dataset
+Las imágenes fueron etiquetadas manualmente en **Roboflow** con 4 clases:
+- `P` — Jugador
+- `B` — Balón
+- `MC` — Medio campo
+- `AC` — Área chica
 
-P — Jugador
-B — Balón
-MC — Medio campo
-AC — Área chica
+División del dataset: **70% entrenamiento / 15% validación / 15% prueba**.
 
-División del dataset: 70% entrenamiento / 15% validación / 15% prueba.
-2. **Entrenamiento**
+### 2. Entrenamiento
+- **Modelo base**: `best_futbol_equipo_v2.pt` (transfer learning)
+- **Framework**: YOLOv8 (Ultralytics)
+- **Hiperparámetros**: `epochs=50`, `imgsz=640`, `batch=8`, `lr0=0.001`, `patience=10`, `seed=42`
+- **Early stopping**: el mejor modelo se guardó alrededor de la época 22; el entrenamiento finalizó en la época 32.
 
-Modelo base: best_futbol_equipo_v2.pt (transfer learning)
-Framework: YOLOv8 (Ultralytics)
-Hiperparámetros: epochs=50, imgsz=640, batch=8, lr0=0.001, patience=10, seed=42
-Early stopping: el mejor modelo se guardó alrededor de la época 22; el entrenamiento finalizó en la época 32.
+### 3. Mejora de detección de objetos pequeños
+Se utilizó **SAHI** con tiles de 320×320 px y 25% de overlap para mejorar la detección del balón.
 
-3. **Mejora de detección de objetos pequeños**
-Se utilizó SAHI con tiles de 320×320 px y 25% de overlap para mejorar la detección del balón.
-4. **Regiones de la cancha**
+### 4. Regiones de la cancha
+- **Línea de medio campo**: detectada automáticamente con la Transformada de Hough sobre el círculo central.
+- **Áreas chicas**: detectadas por el modelo y bloqueadas en el primer frame válido para evitar oscilaciones.
+- **Contorno de la cancha**: generado a partir de la segmentación por color verde del campo con esquinas redondeadas.
 
-Línea de medio campo: detectada automáticamente con la Transformada de Hough sobre el círculo central.
-Áreas chicas: detectadas por el modelo y bloqueadas en el primer frame válido para evitar oscilaciones.
-Contorno de la cancha: generado a partir de la segmentación por color verde del campo con esquinas redondeadas.
-
-5. **Seguimiento del balón**
+### 5. Seguimiento del balón
 Sistema de tracking simple basado en posición previa con predicción de velocidad para frames donde no se detecta el balón (máximo 3 frames consecutivos sin detección).
 
 ---
